@@ -30,16 +30,16 @@ public class ProductController {
     @PostMapping("/products")
     Product newProduct(@RequestBody Product product) {
         Product refProduct = productRepository.findById(product.getProductId()).orElse(null);
-        Boolean supExists = false;
+        var supExists = false;
         for (String supId : product.getSuppliersId()) {
-            supExists = supplierRepository.existsById(supId) ? true : false;
+            supExists = supplierRepository.existsById(supId);
         }
 
         if (refProduct != null) {
             throw new ProductAlreadyExistsException(String.format("No se puede crear el producto, el id %s ya se encuentra en uso", product.getProductId()));
         }
         if (!supExists) {
-            throw new SupplierNotFoundException("El proveedor no existe");
+            throw new SupplierNotFoundException("Error: Asegurese que el proveedor existe");
         }
 
         return productRepository.save(product);
