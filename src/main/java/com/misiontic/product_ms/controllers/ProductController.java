@@ -2,13 +2,13 @@ package com.misiontic.product_ms.controllers;
 
 import com.misiontic.product_ms.exceptions.products.ProductAlreadyExistsException;
 import com.misiontic.product_ms.exceptions.products.ProductNotFoundException;
-import com.misiontic.product_ms.exceptions.suppliers.SupplierNotFoundAdvice;
 import com.misiontic.product_ms.exceptions.suppliers.SupplierNotFoundException;
 import com.misiontic.product_ms.models.Product;
 import com.misiontic.product_ms.repositories.ProductRepository;
 import com.misiontic.product_ms.repositories.SupplierRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -27,6 +27,11 @@ public class ProductController {
                 .orElseThrow(() -> new ProductNotFoundException(String.format("No se encontro el producto con id %s", productId)));
     }
 
+    @GetMapping("/all-products/{userId}")
+    List getAllProducts(@PathVariable String userId) {
+        return productRepository.findByUserId(userId);
+    }
+
     @PostMapping("/products")
     Product newProduct(@RequestBody Product product) {
         Product refProduct = productRepository.findById(product.getProductId()).orElse(null);
@@ -35,7 +40,7 @@ public class ProductController {
             supExists = supplierRepository.existsById(supId);
         }
 
-        if (refProduct != null) {
+        if (refProduct != null && refProduct.getUserId() == product.getUserId()) {
             throw new ProductAlreadyExistsException(String.format("No se puede crear el producto, el id %s ya se encuentra en uso", product.getProductId()));
         }
         if (!supExists) {
