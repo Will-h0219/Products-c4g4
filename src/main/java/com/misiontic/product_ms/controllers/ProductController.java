@@ -39,7 +39,7 @@ public class ProductController {
             throw new ProductAlreadyExistsException(String.format("No se puede crear el producto, el id %s ya se encuentra en uso", product.getProductId()));
         }
         if (!supExists) {
-            throw new SupplierNotFoundException("Error: Asegurese que el proveedor existe");
+            throw new SupplierNotFoundException("Error: Asegurese que el proveedor existe.");
         }
 
         return productRepository.save(product);
