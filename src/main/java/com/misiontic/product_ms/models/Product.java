@@ -2,6 +2,7 @@ package com.misiontic.product_ms.models;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,18 +12,16 @@ public class Product {
 
     private String userId;
     private String productName;
-    private Float cost;
-    private Integer quantityAvailable;
-    private List<String> suppliersId;
+    private ArrayList<String> suppliersId;
+    private ArrayList<Movement> movements;
     private Date lastChange;
 
-    public Product(String productId, String userId, String productName, Float cost, Integer quantityAvailable, List<String> suppliersId, Date lastChange) {
+    public Product(String productId, String userId, String productName, ArrayList<String> suppliersId, ArrayList<Movement> movements, Date lastChange) {
         this.productId = productId;
         this.userId = userId;
         this.productName = productName;
-        this.cost = cost;
-        this.quantityAvailable = quantityAvailable;
         this.suppliersId = suppliersId;
+        this.movements = movements;
         this.lastChange = lastChange;
     }
 
@@ -50,28 +49,20 @@ public class Product {
         this.productName = productName;
     }
 
-    public Float getCost() {
-        return cost;
-    }
-
-    public void setCost(Float cost) {
-        this.cost = cost;
-    }
-
-    public Integer getQuantityAvailable() {
-        return quantityAvailable;
-    }
-
-    public void setQuantityAvailable(Integer quantityAvailable) {
-        this.quantityAvailable = quantityAvailable;
-    }
-
-    public List<String> getSuppliersId() {
+    public ArrayList<String> getSuppliersId() {
         return suppliersId;
     }
 
-    public void setSuppliersId(List<String> suppliersId) {
+    public void setSuppliersId(ArrayList<String> suppliersId) {
         this.suppliersId = suppliersId;
+    }
+
+    public ArrayList<Movement> getMovements() {
+        return movements;
+    }
+
+    public void setMovements(ArrayList<Movement> movements) {
+        this.movements = movements;
     }
 
     public Date getLastChange() {
@@ -80,5 +71,9 @@ public class Product {
 
     public void setLastChange(Date lastChange) {
         this.lastChange = lastChange;
+    }
+
+    public void addMovements(Movement movement) {
+        this.movements.add(movement);
     }
 }
