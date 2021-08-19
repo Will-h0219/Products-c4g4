@@ -30,6 +30,7 @@ public class ProductController {
 
     @GetMapping("/all-products/{userId}")
     List getAllProducts(@PathVariable String userId) {
+
         return productRepository.findByUserId(userId);
     }
 
@@ -49,6 +50,13 @@ public class ProductController {
         }
 
         return productRepository.save(product);
+    }
+
+    @PutMapping("/modify-product/{productId}")
+    String modifyProduct(@PathVariable("productId")String productId, @RequestBody Product product){
+        productRepository.deleteById(productId);
+        productRepository.save(product);
+        return "Se han modificado los datos del producto "+product.getProductId();
     }
 
     @DeleteMapping("/delete-product/{productId}")
