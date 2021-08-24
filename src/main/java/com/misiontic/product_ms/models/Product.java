@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Product {
     @Id
@@ -12,16 +11,20 @@ public class Product {
 
     private String userId;
     private String productName;
+    private String category;
+    private String imgUrl;
+    private Double minimumAmount;
     private ArrayList<String> suppliersId;
-    private ArrayList<Movement> movements;
     private Date lastChange;
 
-    public Product(String productId, String userId, String productName, ArrayList<String> suppliersId, ArrayList<Movement> movements, Date lastChange) {
+    public Product(String productId, String userId, String productName, String category, String imgUrl, Double minimumAmount, ArrayList<String> suppliersId, Date lastChange) {
         this.productId = productId;
         this.userId = userId;
         this.productName = productName;
+        this.category = category;
+        this.imgUrl = imgUrl;
+        this.minimumAmount = minimumAmount;
         this.suppliersId = suppliersId;
-        this.movements = movements;
         this.lastChange = lastChange;
     }
 
@@ -49,6 +52,30 @@ public class Product {
         this.productName = productName;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public Double getMinimumAmount() {
+        return minimumAmount;
+    }
+
+    public void setMinimumAmount(Double minimumAmount) {
+        this.minimumAmount = minimumAmount;
+    }
+
     public ArrayList<String> getSuppliersId() {
         return suppliersId;
     }
@@ -57,23 +84,11 @@ public class Product {
         this.suppliersId = suppliersId;
     }
 
-    public ArrayList<Movement> getMovements() {
-        return movements;
-    }
-
-    public void setMovements(ArrayList<Movement> movements) {
-        this.movements = movements;
-    }
-
     public Date getLastChange() {
         return lastChange;
     }
 
     public void setLastChange(Date lastChange) {
         this.lastChange = lastChange;
-    }
-
-    public void addMovements(Movement movement) {
-        this.movements.add(movement);
     }
 }

@@ -3,7 +3,8 @@ package com.misiontic.product_ms.controllers;
 import com.misiontic.product_ms.exceptions.products.ProductAlreadyExistsException;
 import com.misiontic.product_ms.exceptions.products.ProductNotFoundException;
 import com.misiontic.product_ms.exceptions.suppliers.SupplierNotFoundException;
-import com.misiontic.product_ms.models.Movement;
+import com.misiontic.product_ms.models.PagedList;
+import com.misiontic.product_ms.models.PagingParameters;
 import com.misiontic.product_ms.models.Product;
 import com.misiontic.product_ms.repositories.ProductRepository;
 import com.misiontic.product_ms.repositories.SupplierRepository;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.*;
 
 @RestController
 public class ProductController {
@@ -31,7 +33,7 @@ public class ProductController {
     @GetMapping("/all-products/{userId}")
     List getAllProducts(@PathVariable String userId) {
 
-        return productRepository.findByUserId(userId);
+        return productRepository.findByUserIdOrderByProductId(userId);
     }
 
     @PostMapping("/products")
@@ -48,8 +50,31 @@ public class ProductController {
         if (!supExists) {
             throw new SupplierNotFoundException("El proveedor no se ecuentra registrado");
         }
+        var upperName = product.getProductName().toUpperCase();
+        product.setProductName(upperName);
 
         return productRepository.save(product);
+    }
+
+    @PostMapping("/my-products")
+    PagedList myProducts(@RequestBody PagingParameters pagingParameters) {
+        if (pagingParameters.getUserId() == null) {
+            throw new ProductNotFoundException("Error con userId");
+        }
+        ArrayList<Product> products;
+        if (pagingParameters.getSearchParam() != null) {
+            products = productRepository.findByUserIdAndProductNameRegexOrderByProductId(pagingParameters.getUserId(), pagingParameters.getSearchParam().toUpperCase())
+                    .stream().skip((pagingParameters.getPageNumber() - 1) * pagingParameters.getPageSize())
+                    .limit(pagingParameters.getPageSize())
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            products = productRepository.findByUserIdOrderByProductId(pagingParameters.getUserId())
+                    .stream().skip((pagingParameters.getPageNumber() - 1) * pagingParameters.getPageSize())
+                    .limit(pagingParameters.getPageSize())
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+        Long count = productRepository.countByUserId(pagingParameters.getUserId());
+        return new PagedList(products, count, pagingParameters.getPageNumber(), pagingParameters.getPageSize());
     }
 
     @PutMapping("/modify-product/{productId}")
@@ -63,18 +88,5 @@ public class ProductController {
     String deleteProduct(@PathVariable("productId") String productId) {
         productRepository.deleteById(productId);
         return "producto eliminado";
-    }
-
-    @PutMapping("/add-movement/{productId}")
-    Product addMovement(@RequestBody Movement movement, @PathVariable String productId) {
-        Product refProduct = productRepository.findById(productId).orElse(null);
-        if (refProduct.getMovements() == null) {
-            ArrayList<Movement> newArray = new ArrayList<>();
-            refProduct.setMovements(newArray);
-            refProduct.addMovements(movement);
-        } else {
-            refProduct.addMovements(movement);
-        }
-        return productRepository.save(refProduct);
     }
 }
