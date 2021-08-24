@@ -23,9 +23,9 @@ public class SupplierController {
                 .orElseThrow(()->new SupplierNotFoundException(String.format("No se encontro el proveedor con id",supplierId)));
     }
 
-    @GetMapping("/all-suppliers/{productId}")
-    List getAllSuppliers(@PathVariable String productId){
-        return supplierRepository.findBySupplierId(productId);
+    @GetMapping("/all-suppliers/{userId}")
+    List getAllSuppliers(@PathVariable String userId){
+        return supplierRepository.findByUserIdOrderBySupplierId(userId);
     }
 
     @PostMapping("/suppliers")
@@ -43,7 +43,7 @@ public class SupplierController {
     String modifySupplier(@PathVariable("supplierId")String supplierId,@RequestBody Supplier supplier){
         supplierRepository.deleteById(supplierId);
         supplierRepository.save(supplier);
-        return "Datos del proveedor"+ supplier.getSupplierName()+" actualizados";
+        return "Datos del proveedor "+ supplier.getSupplierName()+" actualizados";
     }
 
     @DeleteMapping("/delete-supplier/{supplierId}")

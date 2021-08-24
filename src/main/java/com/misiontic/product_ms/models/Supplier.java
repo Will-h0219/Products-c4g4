@@ -6,12 +6,14 @@ public class Supplier {
     @Id
     private String supplierId;
 
-    public String supplierName;
-    public String phone;
-    public String email;
+    private String userId;
+    private String supplierName;
+    private String phone;
+    private String email;
 
-    public Supplier(String supplierId, String supplierName, String phone, String email) {
+    public Supplier(String supplierId, String userId, String supplierName, String phone, String email) {
         this.supplierId = supplierId;
+        this.userId = userId;
         this.supplierName = supplierName;
         this.phone = phone;
         this.email = email;
@@ -23,6 +25,14 @@ public class Supplier {
 
     public void setSupplierId(String supplierId) {
         this.supplierId = supplierId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getSupplierName() {
