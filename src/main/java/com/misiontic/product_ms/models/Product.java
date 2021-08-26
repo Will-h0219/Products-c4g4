@@ -1,5 +1,6 @@
 package com.misiontic.product_ms.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class Product {
     private String imgUrl;
     private Double minimumAmount;
     private ArrayList<String> suppliersId;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="America/Bogota")
     private Date lastChange;
 
     public Product(String productId, String userId, String productName, String category, String imgUrl, Double minimumAmount, ArrayList<String> suppliersId, Date lastChange) {

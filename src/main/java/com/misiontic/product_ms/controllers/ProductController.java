@@ -11,6 +11,7 @@ import com.misiontic.product_ms.repositories.SupplierRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.*;
 
@@ -52,6 +53,7 @@ public class ProductController {
         }
         var upperName = product.getProductName().toUpperCase();
         product.setProductName(upperName);
+        product.setLastChange(new Date());
 
         return productRepository.save(product);
     }
@@ -80,6 +82,7 @@ public class ProductController {
     @PutMapping("/modify-product/{productId}")
     String modifyProduct(@PathVariable("productId")String productId, @RequestBody Product product){
         productRepository.deleteById(productId);
+        product.setLastChange(new Date());
         productRepository.save(product);
         return "Se han modificado los datos del producto "+product.getProductId();
     }
