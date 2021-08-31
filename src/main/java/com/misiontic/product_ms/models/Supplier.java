@@ -1,8 +1,12 @@
 package com.misiontic.product_ms.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
 public class Supplier {
+    @Transient
+    public static final String SEQUENCE_NAME = "suppliers_sequence";
+
     @Id
     private String supplierId;
 
@@ -11,8 +15,7 @@ public class Supplier {
     private String phone;
     private String email;
 
-    public Supplier(String supplierId, String userId, String supplierName, String phone, String email) {
-        this.supplierId = supplierId;
+    public Supplier(String userId, String supplierName, String phone, String email) {
         this.userId = userId;
         this.supplierName = supplierName;
         this.phone = phone;

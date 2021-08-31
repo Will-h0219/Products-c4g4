@@ -11,4 +11,5 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     ArrayList<Product> findByUserIdAndProductNameRegexOrderByProductId(String userId, String productName);
     ArrayList<Product> findByUserIdAndCategoryOrderByProductId(String userId, String category);
     Long countByUserId(String userId);
+    Long countByUserIdAndProductNameRegex(String userId, String productName);
 }

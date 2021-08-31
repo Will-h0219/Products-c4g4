@@ -1,6 +1,7 @@
 package com.misiontic.product_ms.controllers;
 
-import com.misiontic.product_ms.exceptions.suppliers.SupplierAlreadyExistsException;
+import com.misiontic.product_ms.Services.Contracts.ISequenceGeneratorService;
+import com.misiontic.product_ms.Services.SequenceGeneratorService;
 import com.misiontic.product_ms.exceptions.suppliers.SupplierNotFoundException;
 import com.misiontic.product_ms.models.Supplier;
 import com.misiontic.product_ms.repositories.SupplierRepository;
@@ -11,10 +12,11 @@ import java.util.List;
 @RestController
 public class SupplierController {
     private final SupplierRepository supplierRepository;
+    private final ISequenceGeneratorService sequenceGenerator;
 
-    public SupplierController(SupplierRepository supplierRepository) {
-
+    public SupplierController(SupplierRepository supplierRepository, ISequenceGeneratorService sequenceGenerator) {
         this.supplierRepository = supplierRepository;
+        this.sequenceGenerator = sequenceGenerator;
     }
 
     @GetMapping("/suppliers/{supplierId}")
@@ -30,18 +32,17 @@ public class SupplierController {
 
     @PostMapping("/suppliers")
     Supplier newSupplier(@RequestBody Supplier supplier) {
-        Supplier refSupplier = supplierRepository.findById(supplier.getSupplierId()).orElse(null);
-
-        if (refSupplier != null) {
-            throw new SupplierAlreadyExistsException(String.format("El proveedor %s, con id %s ya se encuentra creado", supplier.getSupplierName(), supplier.getSupplierId()));
+        if (supplier.getUserId() == null) {
+            throw new SupplierNotFoundException("El proveedor debe tener un usuario relacionado");
         }
+        long id = sequenceGenerator.generateSequence(supplier.SEQUENCE_NAME);
+        supplier.setSupplierId(String.valueOf(id));
 
         return supplierRepository.save(supplier);
     }
 
-    @PutMapping("/modify-supplier/{supplierId}")
-    String modifySupplier(@PathVariable("supplierId")String supplierId,@RequestBody Supplier supplier){
-        supplierRepository.deleteById(supplierId);
+    @PutMapping("/modify-supplier")
+    String modifySupplier(@RequestBody Supplier supplier){
         supplierRepository.save(supplier);
         return "Datos del proveedor "+ supplier.getSupplierName()+" actualizados";
     }
